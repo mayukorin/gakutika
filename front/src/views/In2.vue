@@ -34,12 +34,14 @@
         </v-col>
       </v-row>
     </div>
-    <div v-for="item in items" :key="item.id" class="gakutika-card draggable" :id="item.id" :style="moveStyle(item.id)" :ref="'gakutika'+item.id">
-      <v-responsive :aspect-ratio="16/9">
-        <div>
-            <p>{{ item.title }}</p>
-        </div>
-      </v-responsive>
+    <div>
+      <div v-for="item in items" :key="item.id" class="gakutika-card draggable" :id="item.id" :style="moveStyle(item.id)" :ref="'gakutika'+item.id">
+        <v-responsive :aspect-ratio="16/9">
+          <div>
+              <p>{{ item.title }}</p>
+          </div>
+        </v-responsive>
+      </div>
     </div>
   </v-container>
 </template>
@@ -106,7 +108,7 @@ export default {
 }
 
 </script>
-<style>
+<style scoped>
 
 .child{
   position: absolute;
@@ -155,8 +157,6 @@ export default {
   padding: 4%;
   touch-action: none;
   user-select: none;
-  right: 304px;
-  bottom: -284px;
   /*transform: translate(0%, 0%);*/
   z-index: 100;
 }

@@ -1,93 +1,63 @@
 <template>
-
-    <!--
-    <div id="drag-1" class="draggable">
-      <p>You can drag one element</p>
-    </div>
-    <div id="drag-2" class="draggable">
-      <p>with each pointer</p>
-    </div>
-    -->
-    <v-container>
-      <div class="parent moving-area" id="move" ref="move">
-        <v-row no-gutters  class="pb-2 m" justify="center">
-          <v-col cols="6" class="white pl-1 pr-1 jus" tile>
-            <v-responsive :aspect-ratio="16/9">
-              <div class="label" id="A">
-                A
-              </div>
-            </v-responsive>
-          </v-col>
-          <v-col cols="6" class="white pl-1 pr-1 jus" tile>
-            <v-responsive :aspect-ratio="16/9">
-              <div class="label" id="B">
-                B
-              </div>
-              <div class="label" id="D">
-                D
-              </div>
-            </v-responsive>
-          </v-col>
-        </v-row>
-        <v-row no-gutters class="pb-2 m" justify="center">
-          <v-col cols="6" class="white pl-1 pr-1 jus" tile>
-            <v-responsive :aspect-ratio="16/9">
-            </v-responsive>
-          </v-col>
-          <v-col cols="6" class="white pl-1 pr-1 jus" tile>
-            <v-responsive :aspect-ratio="16/9">
-              <div class="label" id="C">
-                C
-              </div>
-            </v-responsive>
-          </v-col>
-        </v-row>
-        <!--
-        <div id="drag-1" class="draggable">
-          <p>You</p>
-        </div>
-        <div id="drag-2" class="draggable">
-          <p>with</p>
-        </div>
-        -->
-      </div>
-      <!--
-      <v-row no-gutters v-for="i in 2" :key="i" class="pb-2" justify="center">
-          <v-col v-for="j in 2" :key="j" cols="5" class="mr-2 white" tile>
-            <v-responsive :aspect-ratio="16/9">
-              ああああ
-            </v-responsive>
-          </v-col>
+  <v-container>
+    <div class="parent" id="moving-area">
+      <v-row no-gutters  class="x-axis" justify="center">
+        <v-col cols="6" class="white y-axis clip-change" tile>
+          <v-responsive :aspect-ratio="16/9">
+            <div class="label" id="A">
+              A
+            </div>
+          </v-responsive>
+        </v-col>
+        <v-col cols="6" class="white y-axis clip-change" tile>
+          <v-responsive :aspect-ratio="16/9">
+            <div class="label" id="B">
+              B
+            </div>
+            <div class="label" id="D">
+              D
+            </div>
+          </v-responsive>
+        </v-col>
       </v-row>
-      -->
-
-      <div v-for="item in items" :key="item.title" class="quo draggable" :id="item.title" :style="moveStyle(item.title)" :ref="'card' + item.title">
+      <v-row no-gutters justify="center">
+        <v-col cols="6" class="white y-axis clip-change" tile>
+          <v-responsive :aspect-ratio="16/9">
+          </v-responsive>
+        </v-col>
+        <v-col cols="6" class="white y-axis clip-change" tile>
+          <v-responsive :aspect-ratio="16/9">
+            <div class="label" id="C">
+              C
+            </div>
+          </v-responsive>
+        </v-col>
+      </v-row>
+      <div v-for="item in items" :key="item.id" class="gakutika-card draggable" :id="item.id" :style="moveStyle(item.id)" :ref="'gakutika'+item.id">
         <v-responsive :aspect-ratio="16/9">
           <div>
               <p>{{ item.title }}</p>
           </div>
         </v-responsive>
       </div>
-    </v-container>
-    <!--
-        -->
+    </div>
+  </v-container>
 </template>
 
 <script>
 import interact from "interactjs";
 export default {
-  name: "InteractJsTrial",
+  name: "In2",
   data() {
     return {
       items: [
-        { title: "title1", x: 0, y: 0 },
-        { title: "title2", x: 0, y: 0 },
+        { id: 1, title: "title1title1", x_rate: 0, y_rate: 0 },
+        { id: 2, title: "title2", x_rate: 0, y_rate: 0 },
       ],
-      width: 0,
-      height: 0
     };
   },
   mounted: function() {
+    // this.items[1].x_rate = 0.5;
     interact('.draggable')
       .draggable({
         // enable inertial throwing
@@ -95,7 +65,7 @@ export default {
         // keep the element within the area of it's parent
         modifiers: [
         interact.modifiers.restrictRect({
-          restriction: document.querySelector('#move'),
+          restriction: document.querySelector('#moving-area'),
           endOnly: true
         })
         ],
@@ -107,139 +77,37 @@ export default {
           move: this.dragMoveListener,
         }
       });
-      this.width = this.$refs.move.getBoundingClientRect().width;
-      this.height = this.$refs.move.getBoundingClientRect().height;
-      console.log("pppppp");
-      console.log(this.width);
-      window.addEventListener('resize', this.handleResize);
-    },
-    beforeDestroy: function() {
-      window.removeEventListener('resize', this.handleResize);
     },
     methods: {
         dragMoveListener: function(event) {
-            var key = event.target.id
-            console.log(event.target);
-            var item = this.items.find(item=>item.title===key)
-            // keep the dragged position in the data-x/data-y attributes
-            // console.log(item.x);
-            // console.log(item.y);
-            // console.log("-----------")
-            // let index = "card" + key
-            /*
-            let width = this.$refs[index].getBoundingClientRect().width;
-            let height = event.target.height;
-            */
-           /*
+            let key = Number(event.target.id)
+            let item = this.items.find(item=>item.id===key)
             let width = event.target.offsetWidth;
             let height = event.target.offsetHeight;
-            console.log(width);
-            console.log(height);
-            */
-            let dxs = event.dx/this.width;
-            let dys = event.dy/this.height;
-            item.x = (parseFloat(item.x)) + dxs;
-            item.y = (parseFloat(item.y)) + dys;
-            // console.log(item.x);
-            // console.log(item.y);
+           
+            let dxs = event.dx/width;
+            let dys = event.dy/height;
+            console.log(item);
+            item.x_rate = (parseFloat(item.x_rate)) + dxs;
+            item.y_rate = (parseFloat(item.y_rate)) + dys;
         },
-        handleResize: function() {
-          this.width = this.$refs.move.getBoundingClientRect().width;
-          this.height = this.$refs.move.getBoundingClientRect().height;
-          // console.log(this.width);
-          // console.log(this.height);
-        }
     },
     computed: {
         moveStyle: function() {
-            return function(key) {
-                var item = this.items.find(item=>item.title===key)
-                // console.log(item);
-                console.log("ok");
-                console.log(item.x);
-                console.log(item.y);
+            return function(str_key) {
+                let key = Number(str_key)
+                let item = this.items.find(item=>item.id===key)
                 return {
-                    transform: 'translate('+this.width*item.x+'px,'+this.width*item.y+'px)'
+                    transform: 'translate('+item.x_rate*100+'%,'+item.y_rate*100+'%)'
                 }
             }
         }
     }
 }
 
-// target elements with the "draggable" class
-
-// this function is used later in the resizing and gesture demos
-// window.dragMoveListener = dragMoveListener
-/*
-interact(".draggable").draggable({
-  // enable inertial throwing
-  inertia: true,
-  // keep the element within the area of it's parent
-  modifiers: [
-    interact.modifiers.restrictRect({
-      restriction: ".moving-area",
-      endOnly: true,
-    }),
-  ],
-  // enable autoScroll
-  autoScroll: true,
-
-  listeners: {
-    // call this function on every dragmove event
-    move: dragMoveListener,
-
-    // call this function on every dragend event
-    end(event) {
-      var textEl = event.target.querySelector("p");
-
-      textEl &&
-        (textEl.textContent =
-          "moved a distance of " +
-          Math.sqrt(
-            (Math.pow(event.pageX - event.x0, 2) +
-              Math.pow(event.pageY - event.y0, 2)) |
-              0
-          ).toFixed(2) +
-          "px");
-    },
-  },
-});
-
-function dragMoveListener(event) {
-  var target = event.target;
-  // keep the dragged position in the data-x/data-y attributes
-  var x = (parseFloat(target.getAttribute("data-x")) || 0) + event.dx;
-  var y = (parseFloat(target.getAttribute("data-y")) || 0) + event.dy;
-
-  // translate the element
-  target.style.transform = "translate(" + x + "px, " + y + "px)";
-
-  // update the posiion attributes
-  target.setAttribute("data-x", x);
-  target.setAttribute("data-y", y);
-}
-
-// this function is used later in the resizing and gesture demos
-window.dragMoveListener = dragMoveListener;
-*/
 </script>
 <style scoped>
-#title1,
-#title2 {
-  /*width: 25%;*/
-  /*min-height: 6.5em;*/
-  margin: 1rem 0 0 1rem;
-  background-color: #29e;
-  color: white;
-  border-radius: 0.75em;
-  padding: 4%;
-  touch-action: none;
-  user-select: none;
-  right: 304px;
-  bottom: -284px;
-  transform: translate(0px, 0px);
-  z-index: 100;
-}
+
 .child{
   position: absolute;
 }
@@ -276,10 +144,28 @@ window.dragMoveListener = dragMoveListener;
 .m {
   margin-right: -4px!important;
 }
-.jus {
+.clip-change {
   background-clip: content-box;
 }
-.quo {
+.gakutika-card {
   width: 25%;
+  background-color: #29e;
+  color: white;
+  border-radius: 0.75em;
+  padding: 4%;
+  touch-action: none;
+  user-select: none;
+  /*right: 304px;
+  bottom: -284px;*/
+  /*transform: translate(0%, 0%);*/
+  z-index: 100;
+  position: absolute;
+}
+.x-axis {
+  padding-bottom: 8px!important;
+}
+.y-axis {
+  padding-left: 4px!important;
+  padding-right: 4px!important;
 }
 </style>
